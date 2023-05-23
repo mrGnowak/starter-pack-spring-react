@@ -11,9 +11,6 @@ import {
   Slide,
   ListItemIcon,
 } from "@mui/material";
-import DarkMode from "@mui/icons-material/DarkMode";
-import LightMode from "@mui/icons-material/LightMode";
-
 import React from "react";
 import {
   AccountCircle,
@@ -22,10 +19,13 @@ import {
   Logout,
   Person2,
   Menu as MenuIcon,
+  DarkMode,
+  LightMode,
 } from "@mui/icons-material";
 import { Box, Stack } from "@mui/system";
 import { useIsMobile } from "../material/useIsMobile";
 import { useCurrentTheme } from "../material/CurrentThemeProvider";
+import logos from "./logo.svg";
 
 const menuItems = [
   { icon: <Home />, label: "Home", linkTo: "/" },
@@ -90,7 +90,9 @@ export default function Header() {
           <MenuIcon />
         </IconButton>
       )}
-      <Link href="/" style={{ display: "flex" }}></Link>
+      <Link href="/" style={{ display: "flex" }}>
+        <img src={logos} alt="LOGO" height={isMobile ? 25 : 30} />
+      </Link>
       <Box sx={{ mr: 2 }}></Box>
       {leftElementsContainer(
         menuItems.map((items) => (

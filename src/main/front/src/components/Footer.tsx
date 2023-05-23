@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import React from "react";
 
 export const FOOTER_HEIGHT = 64;
 

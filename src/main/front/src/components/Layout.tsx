@@ -1,3 +1,4 @@
+import React from "react";
 import Footer, { FOOTER_HEIGHT } from "./Footer";
 import Header from "./Header";
 import Box from "@mui/material/Box";
