@@ -25,7 +25,7 @@ import {
 import { Box, Stack } from "@mui/system";
 import { useIsMobile } from "../material/useIsMobile";
 import { useCurrentTheme } from "../material/CurrentThemeProvider";
-import logos from "./logo.svg";
+import logos from "../resources/logo.svg";
 
 const menuItems = [
   { icon: <Home />, label: "Home", linkTo: "/" },
@@ -107,7 +107,7 @@ export default function Header() {
       <Box sx={{ flexGrow: 1 }} />{" "}
       {/* This element pushes all below elements to the right */}
       <ChangeThemeButton />
-      {"true" ? (
+      {false ? (
         <>
           <IconButton
             size="large"
