@@ -29,6 +29,8 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping(value = "/api/auth")
 public class AuthController {
 
+    private static final String TOKEN_SECRET = "this-is-a-secret-value-with-at-least-32-characters";
+
     Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
@@ -46,7 +48,7 @@ public class AuthController {
     @PostMapping(value = "/login", consumes = { "*/*" })
     public Long login(@RequestBody LoginUserDto loginUser) {
         try {
-            var credentials = new UsernamePasswordAuthenticationToken(loginUser.getUserName(), loginUser.getPassword());
+            var credentials = new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getHash());
             var authenticate = authManager.authenticate(credentials);
             var principial = (SecurityUser) authenticate.getPrincipal();
 
@@ -54,7 +56,7 @@ public class AuthController {
 
             securityContext.setAuthentication(authenticate);
             getSession().setAttribute(
-                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+                    TOKEN_SECRET, securityContext);
             return principial.getId();
         } catch (Exception ex) {
             return null;
@@ -73,7 +75,7 @@ public class AuthController {
         return new UserDto() {
             {
                 setId(securityUser.getId());
-                setUserName(securityUser.getUsername());
+                setEmail(securityUser.getUsername());
             }
         };
     }

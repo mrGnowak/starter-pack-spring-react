@@ -14,19 +14,14 @@ public class AppUser {
     @GeneratedValue
     private Long id;
     @Column
-    private String userName;
-    @Column
-    private String password;
+    private Integer createdAt;
     @Column
     private String email;
+    @Column
+    private String hash;
+    @Column
+    private String salt;
+    @Column
+    private String chain;
 
-    public AppUser() {
-    }
-
-    public AppUser(Long id, String userName, String password, String email) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.email = email;
-    }
 }

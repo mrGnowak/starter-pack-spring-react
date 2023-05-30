@@ -15,8 +15,8 @@ public class SecurityUserService implements UserDetailsService {
     private UsersRepo usersRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = usersRepo.findByUserName(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        var user = usersRepo.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not present");
         }
@@ -24,8 +24,8 @@ public class SecurityUserService implements UserDetailsService {
             {
                 setId(user.getId());
                 setAuthorities(List.of(() -> "read"));
-                setPassword(user.getPassword());
-                setUsername(user.getUserName());
+                setPassword(user.getHash());
+                setUsername(user.getEmail());
                 setAccountNonExpired(true);
                 setAccountNonLocked(true);
                 setCredentialsNonExpired(true);

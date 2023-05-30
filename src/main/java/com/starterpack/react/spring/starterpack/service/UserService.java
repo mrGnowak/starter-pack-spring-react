@@ -17,32 +17,22 @@ public class UserService {
     private PasswordEncoder globalPasswordEncoder;
 
     public String saveNewUser(AppUser user) {
-        if (checkUserExistUserName(user)) {
-            if (checkUserExistEmail(user)) {
-                String hashPass = globalPasswordEncoder.encode(user.getPassword());
-                user.setPassword(hashPass);
-                usersRepo.save(user);
-                System.out.println("Created!");
-                return "Created!";
-            } else {
-                System.out.println("This email is already in use!");
-                return "This email is already in use!";
-            }
+
+        if (checkUserExistEmail(user)) {
+            String hashPass = globalPasswordEncoder.encode(user.getHash());
+            user.setHash(hashPass);
+            usersRepo.save(user);
+            System.out.println("Created!");
+            return "Created!";
         } else {
-            System.out.println("UserName is occupied");
-            return "UserName is occupied!";
+            System.out.println("This email is already in use!");
+            return "This email is already in use!";
         }
+
     }
 
     public Boolean checkUserExistEmail(AppUser user) {
         if (usersRepo.findByEmail(user.getEmail()) == null) {
-            return true;
-        }
-        return false;
-    }
-
-    public Boolean checkUserExistUserName(AppUser user) {
-        if (usersRepo.findByUserName(user.getUserName()) == null) {
             return true;
         }
         return false;
@@ -58,7 +48,7 @@ public class UserService {
         if (user == null) {
             return null;
         } else {
-            var checkPass = checkPasswordMatches(password, user.getPassword());
+            var checkPass = checkPasswordMatches(password, user.getHash());
             if (checkPass) {
                 return user.getId();
             }
@@ -75,7 +65,7 @@ public class UserService {
     public void updateUser(AppUser appUser) {
         var id = appUser.getId();
         var newUser = usersRepo.findById(id).get();
-        newUser.setPassword(globalPasswordEncoder.encode(appUser.getPassword()));
+        newUser.setHash(globalPasswordEncoder.encode(appUser.getHash()));
         usersRepo.save(newUser);
 
     }
