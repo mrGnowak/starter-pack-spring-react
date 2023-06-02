@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import { FOOTER_HEIGHT } from "../components/Footer";
+import { useUser } from "../UserProvider";
 
 //type Props = {
 //  user: UserDto | null;
@@ -15,6 +16,7 @@ const scrollDown = () => {
 };
 
 export default function Home() {
+  const sessionUser = useUser();
   return (
     <>
       <Box
@@ -46,7 +48,7 @@ export default function Home() {
             color="white"
             gutterBottom
           >
-            Welcome on our website!
+            Welcome on our website {sessionUser?.email ?? "stranger"}!
           </Typography>
         </Box>
         <Typography width="40%" variant="subtitle1" color="white" gutterBottom>

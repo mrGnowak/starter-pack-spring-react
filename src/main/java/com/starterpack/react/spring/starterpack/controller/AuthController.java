@@ -29,7 +29,8 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping(value = "/api/auth")
 public class AuthController {
 
-    private static final String TOKEN_SECRET = "this-is-a-secret-value-with-at-least-32-characters";
+    // private static final String TOKEN_SECRET =
+    // "this-is-a-secret-value-with-at-least-32-characters";
 
     Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -46,9 +47,10 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login", consumes = { "*/*" })
-    public Long login(@RequestBody LoginUserDto loginUser) {
+    public Long login(@RequestBody LoginUserDto loginUserDto) {
         try {
-            var credentials = new UsernamePasswordAuthenticationToken(loginUser.getEmail(), loginUser.getHash());
+            var credentials = new UsernamePasswordAuthenticationToken(loginUserDto.getEmail(),
+                    loginUserDto.getPassword());
             var authenticate = authManager.authenticate(credentials);
             var principial = (SecurityUser) authenticate.getPrincipal();
 
@@ -56,7 +58,7 @@ public class AuthController {
 
             securityContext.setAuthentication(authenticate);
             getSession().setAttribute(
-                    TOKEN_SECRET, securityContext);
+                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
             return principial.getId();
         } catch (Exception ex) {
             return null;
@@ -81,8 +83,8 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register", consumes = { "*/*" })
-    public String register(@NonNull @RequestBody AppUser appUser) {
-        return userService.saveNewUser(appUser);
+    public String register(@NonNull @RequestBody LoginUserDto loginUserDto) {
+        return userService.saveNewUser(loginUserDto);
     }
 
     @PostMapping(value = "/logout")

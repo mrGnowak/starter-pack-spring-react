@@ -13,6 +13,8 @@ import { FormPageWrapper } from "../material/FormPageWrapper";
 import { useForm } from "react-hook-form";
 import { fieldRegisterWrapper } from "../material/fieldRegisterWrapper";
 import { isValidEmailAddress } from "../material/isValidEmailAddress";
+import { useNavigate } from "react-router-dom";
+import { useRefreshUser } from "../UserProvider";
 
 type FormData = {
   email: string;
@@ -21,13 +23,29 @@ type FormData = {
 
 export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
-
+  const navigate = useNavigate();
+  const refreshUser = useRefreshUser();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({});
-  const onSubmit = async () => {};
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await fetch("api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+      navigate("/");
+      refreshUser();
+    } catch (e) {
+      console.log(e);
+    }
+  });
 
   const field = fieldRegisterWrapper(register, errors);
 

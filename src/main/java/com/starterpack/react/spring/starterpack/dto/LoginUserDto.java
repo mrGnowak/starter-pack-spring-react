@@ -7,6 +7,6 @@ public class LoginUserDto {
 
     private String email;
 
-    private String hash;
+    private String password;
 
 }

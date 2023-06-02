@@ -1,14 +1,19 @@
 package com.starterpack.react.spring.starterpack.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.starterpack.react.spring.starterpack.dto.LoginUserDto;
 import com.starterpack.react.spring.starterpack.model.AppUser;
 import com.starterpack.react.spring.starterpack.repository.UsersRepo;
 
 @Component
 public class UserService {
+
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UsersRepo usersRepo;
@@ -16,12 +21,14 @@ public class UserService {
     @Autowired
     private PasswordEncoder globalPasswordEncoder;
 
-    public String saveNewUser(AppUser user) {
+    public String saveNewUser(LoginUserDto loginUserDto) {
 
-        if (checkUserExistEmail(user)) {
-            String hashPass = globalPasswordEncoder.encode(user.getHash());
-            user.setHash(hashPass);
-            usersRepo.save(user);
+        AppUser appUser = new AppUser();
+        if (checkUserExistEmail(loginUserDto.getEmail())) {
+            String hashPass = globalPasswordEncoder.encode(loginUserDto.getPassword());
+            appUser.setHash(hashPass);
+            appUser.setEmail(loginUserDto.getEmail());
+            usersRepo.save(appUser);
             System.out.println("Created!");
             return "Created!";
         } else {
@@ -31,8 +38,8 @@ public class UserService {
 
     }
 
-    public Boolean checkUserExistEmail(AppUser user) {
-        if (usersRepo.findByEmail(user.getEmail()) == null) {
+    public Boolean checkUserExistEmail(String email) {
+        if (usersRepo.findByEmail(email) == null) {
             return true;
         }
         return false;
@@ -40,6 +47,7 @@ public class UserService {
 
     public boolean checkPasswordMatches(String password, String hashPassword) {
         boolean isPasswordMatches = globalPasswordEncoder.matches(password, hashPassword);
+        logger.info("Hasło shashowano" + hashPassword + "i się zgadzają");
         return isPasswordMatches;
     }
 

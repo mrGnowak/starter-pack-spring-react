@@ -4,16 +4,19 @@ import Layout from "./components/Layout";
 import { BrowserRouter } from "react-router-dom";
 import { CurrentThemeProvider } from "./material/CurrentThemeProvider";
 import AppRoutes from "./routes/AppRoutes";
+import { UserProvider } from "./UserProvider";
 
 export default function App() {
   return (
     <>
       <CurrentThemeProvider>
-        <BrowserRouter>
-          <Layout>
-            <AppRoutes />
-          </Layout>
-        </BrowserRouter>
+        <UserProvider>
+          <BrowserRouter>
+            <Layout>
+              <AppRoutes />
+            </Layout>
+          </BrowserRouter>
+        </UserProvider>
       </CurrentThemeProvider>
     </>
   );

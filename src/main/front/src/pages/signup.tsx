@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 import { useForm } from "react-hook-form";
-import { Navigate, Router } from "react-router-dom";
+import { Navigate, Router, useNavigate } from "react-router-dom";
 import { FormPageWrapper } from "../material/FormPageWrapper";
 import { isValidEmailAddress } from "../material/isValidEmailAddress";
 import { fieldRegisterWrapper } from "../material/fieldRegisterWrapper";
@@ -25,7 +25,7 @@ type FormData = {
 
 export default function Signup() {
   const [errorMsg, setErrorMsg] = useState("");
-
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -38,7 +38,7 @@ export default function Signup() {
 
     const body = {
       email: data.email,
-      hash: data.password,
+      password: data.password,
     };
 
     try {
@@ -48,9 +48,7 @@ export default function Signup() {
         body: JSON.stringify(body),
       });
       if (res.status === 200) {
-        window.location.replace(
-          `/login?${feedbackUrlParam("account-created")}`
-        );
+        navigate(`/login?${feedbackUrlParam("account-created")}`);
       } else {
         throw new Error(await res.text());
       }
