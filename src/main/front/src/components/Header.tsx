@@ -26,6 +26,7 @@ import { Box, Stack } from "@mui/system";
 import { useIsMobile } from "../material/useIsMobile";
 import { useCurrentTheme } from "../material/CurrentThemeProvider";
 import logos from "../resources/logo.svg";
+import { useUser } from "../UserProvider";
 
 const menuItems = [
   { icon: <Home />, label: "Home", linkTo: "/" },
@@ -34,6 +35,8 @@ const menuItems = [
 
 export default function Header() {
   const isMobile = useIsMobile();
+
+  const user = useUser();
 
   const leftMenu = useMenu();
   const rightMenu = useMenu();
@@ -107,7 +110,7 @@ export default function Header() {
       <Box sx={{ flexGrow: 1 }} />{" "}
       {/* This element pushes all below elements to the right */}
       <ChangeThemeButton />
-      {false ? (
+      {user ? (
         <>
           <IconButton
             size="large"
@@ -125,7 +128,21 @@ export default function Header() {
             onClick={rightMenu.close}
           >
             <MItem label="Profile" href="/profile" icon={<Person2 />} />
-            <MItem label="Logout" href="/api/logout" icon={<Logout />} />
+            <MItem
+              label="Logout"
+              onClick={async () => {
+                try {
+                  await fetch("api/auth/logout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                  });
+                } catch (e) {
+                  console.warn(`Logout exception ${e}`);
+                }
+              }}
+              href="/"
+              icon={<Logout />}
+            />
           </Menu>
         </>
       ) : (
