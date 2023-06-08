@@ -128,21 +128,7 @@ export default function Header() {
             onClick={rightMenu.close}
           >
             <MItem label="Profile" href="/profile" icon={<Person2 />} />
-            <MItem
-              label="Logout"
-              onClick={async () => {
-                try {
-                  await fetch("api/auth/logout", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                  });
-                } catch (e) {
-                  console.warn(`Logout exception ${e}`);
-                }
-              }}
-              href="/"
-              icon={<Logout />}
-            />
+            <MItem label="Logout" href="/logout" icon={<Logout />} />
           </Menu>
         </>
       ) : (

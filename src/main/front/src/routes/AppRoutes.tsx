@@ -5,6 +5,7 @@ import About from "../pages/About";
 import Login from "../pages/Login";
 import Signup from "../pages/signup";
 import { useUser } from "../UserProvider";
+import Logout from "../pages/Logout";
 
 export default function AppRoutes() {
   const user = useUser();
@@ -14,6 +15,7 @@ export default function AppRoutes() {
       {<Route path="/" element={<Home />} />}
       {<Route path="/about" element={<About />} />}
       {<Route path="/login" element={<Login />} />}
+      {<Route path="/logout" element={<Logout />} />}
       {<Route path="/signup" element={<Signup />} />}
     </Routes>
   );

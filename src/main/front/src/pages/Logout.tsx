@@ -1,7 +1,9 @@
-import ".././styles/App.css";
+import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { useRefreshUser } from "../UserProvider";
 import React from "react";
+import { FormPageWrapper } from "../material/FormPageWrapper";
+import { Box } from "@mui/material";
 
 export default function Logout() {
   const navigate = useNavigate();
@@ -23,4 +25,9 @@ export default function Logout() {
     };
     logout();
   }, [navigate, refreshUser]);
+  return (
+    <FormPageWrapper title={"Logging out..."}>
+      <Box>Logging out...</Box>
+    </FormPageWrapper>
+  );
 }

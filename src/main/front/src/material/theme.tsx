@@ -1,22 +1,25 @@
 import { createTheme, ThemeOptions } from "@mui/material/styles";
 
-export const palette = {
-  primary: {
-    main: "#556cd6",
-  },
-  secondary: {
-    main: "#19857b",
-  },
-};
-
 const themeOptionsDark: ThemeOptions = {
   palette: {
+    primary: {
+      main: "#556cd6",
+    },
+    secondary: {
+      main: "#19857b",
+    },
     mode: "dark",
   },
 };
 
 const themeOptionsLight: ThemeOptions = {
   palette: {
+    primary: {
+      main: "#556cd6",
+    },
+    secondary: {
+      main: "#19857b",
+    },
     mode: "light",
   },
 };
