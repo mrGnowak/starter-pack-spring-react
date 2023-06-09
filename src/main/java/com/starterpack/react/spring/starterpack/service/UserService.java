@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.starterpack.react.spring.starterpack.dto.LoginUserDto;
 import com.starterpack.react.spring.starterpack.model.AppUser;
 import com.starterpack.react.spring.starterpack.repository.UsersRepo;
+import com.starterpack.react.spring.starterpack.security.Chain;
 
 @Component
 public class UserService {
@@ -19,6 +20,9 @@ public class UserService {
     private UsersRepo usersRepo;
 
     @Autowired
+    private EmailSender emailSender;
+
+    @Autowired
     private PasswordEncoder globalPasswordEncoder;
 
     public String saveNewUser(LoginUserDto loginUserDto) {
@@ -27,8 +31,10 @@ public class UserService {
         if (checkUserExistEmail(loginUserDto.getEmail())) {
             String hashPass = globalPasswordEncoder.encode(loginUserDto.getPassword());
             appUser.setHash(hashPass);
+            appUser.setChain("0");
             appUser.setEmail(loginUserDto.getEmail());
             usersRepo.save(appUser);
+            sendVerificationEmail(loginUserDto.getEmail());
             System.out.println("Created!");
             return "Created!";
         } else {
@@ -47,7 +53,6 @@ public class UserService {
 
     public boolean checkPasswordMatches(String password, String hashPassword) {
         boolean isPasswordMatches = globalPasswordEncoder.matches(password, hashPassword);
-        logger.info("Hasło shashowano" + hashPassword + "i się zgadzają");
         return isPasswordMatches;
     }
 
@@ -76,6 +81,10 @@ public class UserService {
         newUser.setHash(globalPasswordEncoder.encode(appUser.getHash()));
         usersRepo.save(newUser);
 
+    }
+
+    public void sendVerificationEmail(String email) {
+        emailSender.sendEmail(email, "Confirm account", "Click on the link to confirm account! LINK");
     }
 
 }
