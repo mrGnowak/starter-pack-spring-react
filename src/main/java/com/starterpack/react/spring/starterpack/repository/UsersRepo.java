@@ -6,6 +6,8 @@ import com.starterpack.react.spring.starterpack.model.AppUser;
 
 public interface UsersRepo extends JpaRepository<AppUser, Long> {
 
-    AppUser findByEmail(String email);
+    AppUser findByEmailIgnoreCase(String email);
+
+    Boolean existsByEmail(String email);
 
 }

@@ -12,9 +12,9 @@ public class AppUser {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Long userId;
     @Column
-    private Integer createdAt;
+    private String createdAt;
     @Column
     private String email;
     @Column

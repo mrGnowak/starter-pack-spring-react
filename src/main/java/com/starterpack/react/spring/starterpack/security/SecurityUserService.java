@@ -16,13 +16,13 @@ public class SecurityUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        var user = usersRepo.findByEmail(email);
+        var user = usersRepo.findByEmailIgnoreCase(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not present");
         }
         return new SecurityUser() {
             {
-                setId(user.getId());
+                setId(user.getUserId());
                 setAuthorities(List.of(() -> "read"));
                 setPassword(user.getHash());
                 setUsername(user.getEmail());

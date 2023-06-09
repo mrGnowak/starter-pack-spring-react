@@ -3,6 +3,7 @@ package com.starterpack.react.spring.starterpack.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -76,14 +79,14 @@ public class AuthController {
 
         return new UserDto() {
             {
-                setId(securityUser.getId());
+                setUserId(securityUser.getId());
                 setEmail(securityUser.getUsername());
             }
         };
     }
 
     @PostMapping(value = "/register", consumes = { "*/*" })
-    public String register(@NonNull @RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<?> register(@NonNull @RequestBody LoginUserDto loginUserDto) {
         return userService.saveNewUser(loginUserDto);
     }
 
@@ -97,5 +100,10 @@ public class AuthController {
     public String changePass(@NonNull @RequestBody AppUser appUser) {
         userService.updateUser(appUser);
         return "Changed!";
+    }
+
+    @RequestMapping(value = "/confirm-account", method = { RequestMethod.GET, RequestMethod.POST })
+    public ResponseEntity<?> confirmUserAccount(@RequestParam("token") String confirmationToken) {
+        return userService.confirmEmail(confirmationToken);
     }
 }
