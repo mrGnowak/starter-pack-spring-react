@@ -1,8 +1,6 @@
 package com.starterpack.react.spring.starterpack.service;
 
-import java.time.LocalDate;
-import java.util.Date;
-
+import java.util.Calendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,16 +42,15 @@ public class UserService {
             System.out.println("This email is already in use!");
             return ResponseEntity.badRequest().body("Error: Email is already in use!");
         }
-        LocalDate localDate = LocalDate.now();
 
         String hashPass = globalPasswordEncoder.encode(loginUserDto.getPassword());
         appUser.setHash(hashPass);
-        appUser.setChain("0");
+        appUser.setChain(chain.STARTING_CHAIN);
         appUser.setEmail(loginUserDto.getEmail());
-        appUser.setCreatedAt(localDate.toString());
         usersRepo.save(appUser);
 
         ConfirmationToken confirmationToken = new ConfirmationToken(appUser);
+        confirmationToken.setExpiryDate(confirmationToken.calculateExpiryDate());
         confirmationTokenRepository.save(confirmationToken);
 
         sendVerificationEmail(loginUserDto.getEmail(), confirmationToken.getConfirmationToken());
@@ -64,15 +61,22 @@ public class UserService {
 
     public ResponseEntity<?> confirmEmail(String confirmationToken) {
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+        Calendar cal = Calendar.getInstance();
+        if (token != null && (token.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            confirmationTokenRepository.deleteById(token.getTokenId());
+            return ResponseEntity.badRequest().body("Error: Email is expired");
+        }
 
         if (token != null) {
             AppUser user = usersRepo.findByEmailIgnoreCase(token.getUserEntity().getEmail());
             user.setChain(chain.generateNextChain());
             System.out.println(chain.generateNextChain());
             usersRepo.save(user);
+            confirmationTokenRepository.deleteById(token.getTokenId());
             return ResponseEntity.ok("Email verified successfully!");
         }
-        return ResponseEntity.badRequest().body("Error: Couldn't verify email");
+
+        return ResponseEntity.badRequest().body("Error: Couldn't verify email or email is expired");
     }
 
     public boolean checkPasswordMatches(String password, String hashPassword) {

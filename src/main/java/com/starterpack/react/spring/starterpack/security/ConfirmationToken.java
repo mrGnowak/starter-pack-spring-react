@@ -1,5 +1,7 @@
 package com.starterpack.react.spring.starterpack.security;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -18,6 +20,9 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 public class ConfirmationToken {
+
+    private static final int EXPIRATION = 60 * 24;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "token_id")
@@ -32,6 +37,23 @@ public class ConfirmationToken {
     @OneToOne(targetEntity = AppUser.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private AppUser appUser;
+
+    private Date expiryDate;
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    public Date calculateExpiryDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Timestamp(cal.getTime().getTime()));
+        cal.add(Calendar.MINUTE, EXPIRATION);
+        return new Date(cal.getTime().getTime());
+    }
 
     public ConfirmationToken() {
     }
