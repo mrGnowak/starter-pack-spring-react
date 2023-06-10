@@ -3,6 +3,7 @@ import React from "react";
 export type UserDto = {
   id: number;
   email: string;
+  emailConfirmed: boolean;
 };
 
 export type UserContextType = {

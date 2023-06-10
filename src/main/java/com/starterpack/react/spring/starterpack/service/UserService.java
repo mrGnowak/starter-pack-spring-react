@@ -46,17 +46,26 @@ public class UserService {
         String hashPass = globalPasswordEncoder.encode(loginUserDto.getPassword());
         appUser.setHash(hashPass);
         appUser.setChain(chain.STARTING_CHAIN);
+        appUser.setEmailConfirmed(false);
         appUser.setEmail(loginUserDto.getEmail());
         usersRepo.save(appUser);
 
+        sendVeryficationEmail(loginUserDto.getEmail());
+
+        System.out.println("Created!");
+        return ResponseEntity.ok("Verify email by the link sent on your email address");
+
+    }
+
+    public void sendVeryficationEmail(String email) {
+        AppUser appUser = usersRepo.findByEmail(email);
         ConfirmationToken confirmationToken = new ConfirmationToken(appUser);
         confirmationToken.setExpiryDate(confirmationToken.calculateExpiryDate());
         confirmationTokenRepository.save(confirmationToken);
 
-        sendVerificationEmail(loginUserDto.getEmail(), confirmationToken.getConfirmationToken());
-        System.out.println("Created!");
-        return ResponseEntity.ok("Verify email by the link sent on your email address");
-
+        emailSender.sendEmail(email, "Confirm account",
+                "Click on the link to confirm account! " + "http://localhost:8080/api/auth/confirm-account?token="
+                        + confirmationToken.getConfirmationToken());
     }
 
     public ResponseEntity<?> confirmEmail(String confirmationToken) {
@@ -69,7 +78,8 @@ public class UserService {
 
         if (token != null) {
             AppUser user = usersRepo.findByEmailIgnoreCase(token.getUserEntity().getEmail());
-            user.setChain(chain.generateNextChain());
+            // user.setChain(chain.generateNextChain());
+            user.setEmailConfirmed(true);
             System.out.println(chain.generateNextChain());
             usersRepo.save(user);
             confirmationTokenRepository.deleteById(token.getTokenId());
@@ -111,10 +121,9 @@ public class UserService {
 
     }
 
-    public void sendVerificationEmail(String email, String token) {
-        emailSender.sendEmail(email, "Confirm account",
-                "Click on the link to confirm account! " + "http://localhost:8080/api/auth/confirm-account?token="
-                        + token);
-    }
+    public boolean checkConfirmedEmail(Long id) {
+        AppUser user = usersRepo.findById(id).get();
+        return user.isEmailConfirmed();
 
+    }
 }

@@ -8,4 +8,5 @@ import com.starterpack.react.spring.starterpack.security.ConfirmationToken;
 @Repository("confirmationTokenRepository")
 public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, Long> {
     ConfirmationToken findByConfirmationToken(String confirmationToken);
+
 }

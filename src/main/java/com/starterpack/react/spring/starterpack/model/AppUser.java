@@ -29,5 +29,7 @@ public class AppUser {
     private String salt;
     @Column
     private String chain;
+    @Column
+    private boolean emailConfirmed;
 
 }

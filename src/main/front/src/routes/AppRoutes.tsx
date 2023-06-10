@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/signup";
 import { useUser } from "../UserProvider";
 import Logout from "../pages/Logout";
+import ProfileInfo from "../pages/ProfileInfo";
 
 export default function AppRoutes() {
   const user = useUser();
@@ -17,6 +18,7 @@ export default function AppRoutes() {
       {<Route path="/login" element={<Login />} />}
       {<Route path="/logout" element={<Logout />} />}
       {<Route path="/signup" element={<Signup />} />}
+      {<Route path="/profile" element={<ProfileInfo />} />}
     </Routes>
   );
 }

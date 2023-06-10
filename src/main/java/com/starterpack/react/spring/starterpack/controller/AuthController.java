@@ -68,6 +68,11 @@ public class AuthController {
         }
     }
 
+    @PostMapping(value = "/resendConfirmationLink", consumes = { "*/*" })
+    public void resendConfirmationLink(@RequestBody UserDto userDto) {
+        userService.sendVeryficationEmail(userDto.getEmail());
+    }
+
     @GetMapping("/getUser")
     public UserDto getUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -81,6 +86,7 @@ public class AuthController {
             {
                 setUserId(securityUser.getId());
                 setEmail(securityUser.getUsername());
+                setEmailConfirmed(userService.checkConfirmedEmail(securityUser.getId()));
             }
         };
     }

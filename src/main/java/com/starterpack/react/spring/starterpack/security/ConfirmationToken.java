@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.starterpack.react.spring.starterpack.model.AppUser;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,7 +35,8 @@ public class ConfirmationToken {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
 
-    @OneToOne(targetEntity = AppUser.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = AppUser.class, fetch = FetchType.EAGER) // cascade = CascadeType.REMOVE, orphanRemoval =
+                                                                     // true,
     @JoinColumn(nullable = false, name = "user_id")
     private AppUser appUser;
 
