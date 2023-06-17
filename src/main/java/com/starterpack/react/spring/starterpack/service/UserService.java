@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.starterpack.react.spring.starterpack.dto.LoginUserDto;
 import com.starterpack.react.spring.starterpack.model.AppUser;
@@ -15,7 +15,7 @@ import com.starterpack.react.spring.starterpack.repository.UsersRepo;
 import com.starterpack.react.spring.starterpack.security.Chain;
 import com.starterpack.react.spring.starterpack.security.ConfirmationToken;
 
-@Component
+@Service
 public class UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -30,10 +30,10 @@ public class UserService {
     private PasswordEncoder globalPasswordEncoder;
 
     @Autowired
-    ConfirmationTokenRepository confirmationTokenRepository;
+    private ConfirmationTokenRepository confirmationTokenRepository;
 
     @Autowired
-    Chain chain;
+    private Chain chain;
 
     public ResponseEntity<String> saveNewUser(LoginUserDto loginUserDto) {
 
@@ -59,6 +59,12 @@ public class UserService {
 
     public void sendVeryficationEmail(String email) {
         AppUser appUser = usersRepo.findByEmail(email);
+
+        if (confirmationTokenRepository.existsByAppUserUserId(appUser.getUserId())) { // ?
+            var tokenId = confirmationTokenRepository.findByAppUserUserId(appUser.getUserId()).getTokenId();
+            confirmationTokenRepository.deleteById(tokenId);
+        }
+
         ConfirmationToken confirmationToken = new ConfirmationToken(appUser);
         confirmationToken.setExpiryDate(confirmationToken.calculateExpiryDate());
         confirmationTokenRepository.save(confirmationToken);
