@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { CurrentThemeProvider } from "./material/CurrentThemeProvider";
 import AppRoutes from "./routes/AppRoutes";
 import { UserProvider } from "./UserProvider";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 export default function App() {
   return (
@@ -12,9 +13,11 @@ export default function App() {
       <CurrentThemeProvider>
         <UserProvider>
           <BrowserRouter>
-            <Layout>
-              <AppRoutes />
-            </Layout>
+            <ErrorBoundary>
+              <Layout>
+                <AppRoutes />
+              </Layout>
+            </ErrorBoundary>
           </BrowserRouter>
         </UserProvider>
       </CurrentThemeProvider>
