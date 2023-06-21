@@ -52,10 +52,10 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/todoapp/**").authenticated()
-                .requestMatchers("/todoapp").authenticated()
-                .requestMatchers("/api/getUser").authenticated()
-                .requestMatchers("/api/login/**").permitAll()
+                .requestMatchers("/logout").authenticated()
+                .requestMatchers("/profile").authenticated()
+                .requestMatchers("/api/auth/getUser").authenticated()
+                .requestMatchers("/apiauth/login/**").permitAll()
                 .anyRequest().permitAll();
 
         return http.build();
