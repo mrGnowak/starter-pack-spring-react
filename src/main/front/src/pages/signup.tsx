@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import { useForm } from "react-hook-form";
 import { Navigate, Router, useNavigate } from "react-router-dom";
@@ -16,6 +17,10 @@ import { FormPageWrapper } from "../material/FormPageWrapper";
 import { isValidEmailAddress } from "../material/isValidEmailAddress";
 import { fieldRegisterWrapper } from "../material/fieldRegisterWrapper";
 import { feedbackUrlParam } from "../material/feedback";
+import {
+  passwordRegisterOptions,
+  repeatedPasswordRegisterOptions,
+} from "../auth/passwordRegisterOptions";
 
 type FormData = {
   email: string;
@@ -25,6 +30,10 @@ type FormData = {
 
 export default function Signup() {
   const [errorMsg, setErrorMsg] = useState("");
+  const [passwordShown, setPasswordShown] = useState(false);
+  const togglePassword = () => {
+    setPasswordShown(!passwordShown);
+  };
   const navigate = useNavigate();
   const {
     register,
@@ -79,14 +88,17 @@ export default function Signup() {
           <TextField
             label="Password"
             variant="outlined"
-            type="password"
-            {...field("password")}
+            type={passwordShown ? "text" : "password"}
+            {...field("password", passwordRegisterOptions())}
+            InputProps={{
+              endAdornment: <VisibilityIcon onClick={togglePassword} />,
+            }}
           />
           <TextField
             label="Repeat Password"
             variant="outlined"
-            type="password"
-            {...field("rpassword")}
+            type={passwordShown ? "text" : "password"}
+            {...field("rpassword", repeatedPasswordRegisterOptions())}
           />
 
           <Box sx={{ display: "flex" }}>
